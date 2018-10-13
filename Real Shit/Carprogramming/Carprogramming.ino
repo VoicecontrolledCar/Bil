@@ -26,30 +26,30 @@ void loop() {
 if (Serial.available()>0){
   import = Serial.read();
 }
-if(import=0){
+if(import==0){
 analogWrite(rightEngine,0);
 analogWrite(leftEngine,0);
 servo.write(straight);
 }
-if(import=1){
+if(import==1){
   int velocity(1,30);
   }
-if(import=2){
+if(import==2){
   int velocity(2,60);
   }
-if(import=3){
+if(import==3){
   int velocity(3,120);
   }
-if(import=4){
+if(import==4){
   int velocity(4,255);
   }
-if(import=5){
+if(import==5){
   int turning(left);
   }
-if(import=6){
+if(import==6){
   int turning(right);
   }
-if(import=7){}
+if(import==7){}
 
 }  //loopen är slut
 
