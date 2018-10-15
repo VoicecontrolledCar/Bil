@@ -134,6 +134,7 @@ else
       }
       x=-1;
       commandNumber=0;
+      Serial.read();
       
       
       }
