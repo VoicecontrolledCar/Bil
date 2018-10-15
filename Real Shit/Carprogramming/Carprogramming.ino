@@ -17,7 +17,7 @@ const int straight=90;
 int executor=0;             //Variabeln vars värde styr bilen i loopen, gamla import
 int executorValue;          //Skriver in vilket kommando som använts i minnet
 int durationWrite;          //Skriver in hur länge ett kommando använts i minnet
-int memory[2][2000];        //En array som sparar bilens rörelser
+int memory[2][200];        //En array som sparar bilens rörelser
 int commandWriteNumber=0;   //Kommer ihåg vilken kolumn som används för att skriva in i minnet
 int commandReadNumber=-1;   //Kommer ihåg vilken kolumn som används för att läsa ur minnet
 int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, används för here
@@ -25,9 +25,9 @@ int durationRead=0;         //Läser ur minnet hur länge ett kommando använts 
 //De olika funktioner och deras datatyper deklararas här
 int velocity(int gearNumber, int spead);
 int turning(int angle, int leftEngineSpead, int rightEngineSpead, int exportValue);
-int Here();
-int STOPP ();
-
+void Here();
+void STOPP ();
+void turnAround ();
 
 void setup() {
  
@@ -54,26 +54,30 @@ analogWrite(leftEngine,0);
 servo.write(straight);
 }
 if(executor==1){        //"Växel 1"
-  int velocity(1,30);
+  velocity(1,30);
   }
 if(executor==2){        //"Växel 2"
-  int velocity(2,60);
+  velocity(2,60);
   }
 if(executor==3){        //"Växel 3"
-  int velocity(3,120);
+  velocity(3,120);
   }
 if(executor==4){        //"Växel 4"
-  int velocity(4,255);
+  velocity(4,255);
   }
 if(executor==5){        //"Sväng vänster"
-  int turning(left,30,0,6);
+  turning(left,30,0,6);
   }
 if(executor==6){        //"Sväng höger"
-  int turning(right,0,30,5);
+  turning(right,0,30,5);
   }
 if(executor==7){       //Here
-int Here;
-}  //Loopen är slut
+  Here();
+}  
+if (executor=8){
+  turnAround();
+}
+//Loopen är slut
 }
 
 
@@ -132,7 +136,7 @@ else
 
 
 
-    int STOPP ()
+    void STOPP ()
     {
       analogWrite(rightEngine,0);
       analogWrite(rightReverse,0);
@@ -144,17 +148,18 @@ else
 
 
 
-  int Here()
+  void Here()
   {
-    //Vänd också!!!
-    commandReadNumber++;
+    commandReadNumber--;
+    if (commandReadNumber==-2) turnAround();
+    commandReadNumber=commandReadNumber+2;
     executor=memory[0][commandReadNumber];
     durationRead=memory[1][commandReadNumber];
     
     if(executor=0){     //När det inte längre finns data att läsa in så stannar bilen
      
             STOPP ();
-            for(int w=0;w++;w<2000){     //Denna loop tömmer minnet
+            for(int w=0;w++;w<200){     //Denna loop tömmer minnet
               memory[0][w]=0;
               memory[1][w]=0;
       }
@@ -163,6 +168,30 @@ else
       commandReadNumber=-1;
       Serial.read();
       }
-    
-    
     }
+
+
+
+
+   void turnAround ()
+   {
+      STOPP();
+      servo.write(left);
+      analogWrite(rightEngine,30);
+      delay (1600);
+      analogWrite(rightEngine,0);
+      servo.write(right);
+      analogWrite(leftReverse,30);
+      delay (1600);
+      analogWrite(leftReverse,0);
+      servo.write(straight); 
+      analogWrite(rightEngine,30);
+      analogWrite(leftEngine, 30);
+      delay (600);
+      STOPP();
+      if (commandReadNumber==-1) {
+        memory [0][commandWriteNumber]=executorValue;
+        commandWriteNumber++;
+      }
+   
+   }
