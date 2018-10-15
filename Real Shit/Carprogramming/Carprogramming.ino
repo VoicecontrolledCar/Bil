@@ -77,7 +77,7 @@ if(executor==6){        //"Sväng höger"
 if(executor==7){       //Here
   Here();
 }  
-if (executor=8){
+if (executor==8){
   turnAround();
 }
 //Loopen är slut
@@ -159,7 +159,7 @@ else
     executor=memory[0][commandReadNumber];
     durationRead=memory[1][commandReadNumber];
     
-    if(executor=0){                   //När det inte längre finns data att läsa in så stannar bilen
+    if(executor==0){                   //När det inte längre finns data att läsa in så stannar bilen
      
             STOP ();
             for(int w=0;w++;w<200){   //Denna loop tömmer minnet
