@@ -17,7 +17,7 @@ const int straight=90;
 int executor=0;             //Variabeln vars värde styr bilen i loopen, gamla import
 int executorValue;          //Skriver in vilket kommando som använts i minnet
 int durationWrite;          //Skriver in hur länge ett kommando använts i minnet
-int memory[2][200];        //En array som sparar bilens rörelser
+int memory[2][200];         //En array som sparar bilens rörelser
 int commandWriteNumber=0;   //Kommer ihåg vilken kolumn som används för att skriva in i minnet
 int commandReadNumber=-1;   //Kommer ihåg vilken kolumn som används för att läsa ur minnet
 int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, används för here
@@ -29,7 +29,10 @@ void Here();
 void STOPP ();
 void turnAround ();
 
-void setup() {
+
+
+
+void setup() {             //Visar för arduinon hur pinsen ska användas och startar bluetoothen
  
   servo.attach (microServo) ;
   pinMode (rightEngine,OUTPUT);
@@ -40,9 +43,11 @@ void setup() {
 }
 
 
-void loop() {
 
-//ett test så att herefunktionen inte håller på innan executor får bluetoothsignalens värde
+
+void loop() {             //Koden som går runt runt på repeat medan arduinon är igång
+
+//Ett test så att herefunktionen inte håller på innan executorn får bluetoothsignalens värde
 if(commandReadNumber==-1){
 if (Serial.available()>0){
   executor = Serial.read();
@@ -119,7 +124,7 @@ else
   servo.write(angle);
      if(commandReadNumber==-1)
         {
-         while(Serial.available()==0){
+         while(Serial.available()==0){     //Borde det inte vara >=0 ???
          delay(1);
           durationWrite++;
          }
@@ -150,23 +155,23 @@ else
 
   void Here()
   {
-    commandReadNumber--;
+    commandReadNumber--;       //Gör värdet till -2 ifall det är första gången - annars vänder bilen igen
     if (commandReadNumber==-2) turnAround();
     commandReadNumber=commandReadNumber+2;
     executor=memory[0][commandReadNumber];
     durationRead=memory[1][commandReadNumber];
     
-    if(executor=0){     //När det inte längre finns data att läsa in så stannar bilen
+    if(executor=0){                   //När det inte längre finns data att läsa in så stannar bilen
      
             STOPP ();
-            for(int w=0;w++;w<200){     //Denna loop tömmer minnet
+            for(int w=0;w++;w<200){   //Denna loop tömmer minnet
               memory[0][w]=0;
               memory[1][w]=0;
       }
      
-      commandWriteNumber=0;
+      commandWriteNumber=0;      //Nollställer kolomnräknarna så nya bilrörelser kan sparas i minnet
       commandReadNumber=-1;
-      Serial.read();
+      Serial.read();             //Detta raderar alla kommandon som inkommit då herefunktionen använts
       }
     }
 
