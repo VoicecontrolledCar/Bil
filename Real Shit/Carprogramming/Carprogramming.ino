@@ -26,7 +26,7 @@ int durationRead=0;         //Läser ur minnet hur länge ett kommando använts 
 int velocity(int gearNumber, int spead);
 int turning(int angle, int leftEngineSpead, int rightEngineSpead, int exportValue);
 void Here();
-void STOPP ();
+void STOP ();
 void turnAround ();
 
 
@@ -54,9 +54,7 @@ if (Serial.available()>0){
 }}
 
 if(executor==0){        //"Stanna"
-analogWrite(rightEngine,0);
-analogWrite(leftEngine,0);
-servo.write(straight);
+  STOP();
 }
 if(executor==1){        //"Växel 1"
   velocity(1,30);
@@ -141,7 +139,7 @@ else
 
 
 
-    void STOPP ()
+    void STOP ()
     {
       analogWrite(rightEngine,0);
       analogWrite(rightReverse,0);
@@ -163,7 +161,7 @@ else
     
     if(executor=0){                   //När det inte längre finns data att läsa in så stannar bilen
      
-            STOPP ();
+            STOP ();
             for(int w=0;w++;w<200){   //Denna loop tömmer minnet
               memory[0][w]=0;
               memory[1][w]=0;
@@ -180,7 +178,7 @@ else
 
    void turnAround ()
    {
-      STOPP();
+      STOP();
       servo.write(left);
       analogWrite(rightEngine,30);
       delay (1600);
@@ -193,7 +191,7 @@ else
       analogWrite(rightEngine,30);
       analogWrite(leftEngine, 30);
       delay (600);
-      STOPP();
+      STOP();
       if (commandReadNumber==-1) {
         memory [0][commandWriteNumber]=executorValue;
         commandWriteNumber++;
