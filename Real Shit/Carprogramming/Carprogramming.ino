@@ -22,11 +22,12 @@ int commandReadNumber=-1;   //Kommer ihåg vilken kolumn som används för att l
 int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, används för here, tiden ett kommando används
 
 //De olika funktioner och deras datatyper deklararas här
-int velocity(int executor, int spead);
+int velocity(int executor, int power);
 int turning(int angle, int leftEngineSpead, int rightEngineSpead, int executor);
 void Here();
 void STOP ();
 void turnAround ();
+void clearMemory ();
 
 
 
@@ -73,11 +74,14 @@ if(executor==5){        //"Sväng vänster"
 if(executor==6){        //"Sväng höger"
   turning(right,0,30,5);
   }
-if(executor==7){       //Here
+if(executor==7){       //"Here"
   Here();
 }  
-if (executor==8){
+if (executor==8){      //"Vänd"
   turnAround();
+}
+if (executor==9) {     //"Nollställ minnet"
+  clearMemory ();
 }
 //Loopen är slut
 }
@@ -85,12 +89,12 @@ if (executor==8){
 
 
 
-int velocity(int executor, int spead)
+int velocity(int executor, int power)
 {
   durationWrite=0;
   servo.write(straight);
-  analogWrite(rightEngine, spead);
-  analogWrite(leftEngine, spead);
+  analogWrite(rightEngine, power);
+  analogWrite(leftEngine, power);
       if(commandReadNumber==-1)
         {
             while(Serial.available()<=0){  
@@ -157,16 +161,9 @@ else
     durationRead=memory[1][commandReadNumber];
     
     if(executor==0){                   //När det inte längre finns data att läsa in så stannar bilen
-     
-            STOP ();
-            for(int w=0;w++;w<200){   //Denna loop tömmer minnet
-              memory[0][w]=0;
-              memory[1][w]=0;
-      }
-     
-      commandWriteNumber=0;      //Nollställer kolomnräknarna så nya bilrörelser kan sparas i minnet
-      commandReadNumber=-1;
-      Serial.read();             //Detta raderar alla kommandon som inkommit då herefunktionen använts
+      STOP ();
+      clearMemory ();
+      Serial.read();  
       }
     }
 
@@ -194,4 +191,15 @@ else
         commandWriteNumber++;
       }
    
+   }
+
+
+
+   void clearMemory () {
+    for(int w=0;w++;w<200){   
+              memory[0][w]=0;
+              memory[1][w]=0;
+              }
+              commandWriteNumber=0;
+              commandReadNumber=-1;
    }
