@@ -8,23 +8,22 @@ const int rightReverse=6;
 const int leftReverse=5; 
 const int microServo=3; 
 
-//Vinkeln för servon för de olika riktningarna den kan ha
+//Vinkeln för servon för de olika riktningarna
 const int left=60; 
 const int right=120; 
 const int straight=90; 
 
-//Olika variablar deklareras, så de kan användas senare
-int executor=0;             //Variabeln vars värde styr bilen i loopen, gamla import
-int executorValue;          //Skriver in vilket kommando som använts i minnet
-int durationWrite;          //Skriver in hur länge ett kommando använts i minnet
+//Variablar deklareras
+int executor=0;             //Variabeln vars värde styr bilen i loopen     
+int durationWrite;          //Skriver in hur länge ett kommando använts i minnet, tiden ett kommando används
 int memory[2][200];         //En array som sparar bilens rörelser
 int commandWriteNumber=0;   //Kommer ihåg vilken kolumn som används för att skriva in i minnet
 int commandReadNumber=-1;   //Kommer ihåg vilken kolumn som används för att läsa ur minnet
-int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, används för here
+int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, används för here, tiden ett kommando används
 
 //De olika funktioner och deras datatyper deklararas här
-int velocity(int gearNumber, int spead);
-int turning(int angle, int leftEngineSpead, int rightEngineSpead, int exportValue);
+int velocity(int executor, int spead);
+int turning(int angle, int leftEngineSpead, int rightEngineSpead, int executor);
 void Here();
 void STOP ();
 void turnAround ();
@@ -86,20 +85,19 @@ if (executor==8){
 
 
 
-int velocity(int gearNumber, int spead)
+int velocity(int executor, int spead)
 {
-  executorValue=gearNumber;
   durationWrite=0;
   servo.write(straight);
   analogWrite(rightEngine, spead);
   analogWrite(leftEngine, spead);
       if(commandReadNumber==-1)
         {
-            while(Serial.available()==0){     //Borde det inte vara >=0 ???
+            while(Serial.available()<=0){  
             delay(1);
             durationWrite++;
 }
-  memory[0][commandWriteNumber]=executorValue;  
+  memory[0][commandWriteNumber]=executor;  
   memory[1][commandWriteNumber]= durationWrite;
   commandWriteNumber++;
 }
@@ -113,20 +111,19 @@ else
 
 
 
-  int turning(int angle, int leftEngineSpead, int rightEngineSpead, int exportValue)
+  int turning(int angle, int leftEngineSpead, int rightEngineSpead, int executor)
   {
-  executorValue=exportValue;
   durationWrite=0;
   analogWrite(leftEngine, leftEngineSpead);
   analogWrite(rightEngine, rightEngineSpead);
   servo.write(angle);
      if(commandReadNumber==-1)
         {
-         while(Serial.available()==0){     //Borde det inte vara >=0 ???
+         while(Serial.available()<=0){    
          delay(1);
           durationWrite++;
          }
-    memory[0][commandWriteNumber]=executorValue;
+    memory[0][commandWriteNumber]=executor;
     memory[1][commandWriteNumber]=durationWrite;
     commandWriteNumber++;
    }
@@ -193,7 +190,7 @@ else
       delay (600);
       STOP();
       if (commandReadNumber==-1) {
-        memory [0][commandWriteNumber]=executorValue;
+        memory [0][commandWriteNumber]=executor;
         commandWriteNumber++;
       }
    
