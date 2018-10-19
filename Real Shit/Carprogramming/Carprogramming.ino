@@ -28,6 +28,7 @@ void Here();
 void STOP ();
 void turnAround ();
 void clearMemory ();
+void driveTo (bool test);
 
 
 
@@ -74,7 +75,7 @@ if(executor==5){        //"Sväng vänster"
 if(executor==6){        //"Sväng höger"
   turning(right,0,30,5);
   }
-if(executor==7){       //"Here"
+if(executor==7){       //"Hit"
   Here();
 }  
 if (executor==8){      //"Vänd"
@@ -82,6 +83,12 @@ if (executor==8){      //"Vänd"
 }
 if (executor==9) {     //"Nollställ minnet"
   clearMemory ();
+}
+if (executor==-1) {    //"Kör till x"
+  driveTo (true);
+}
+if (executor==-2){ //"åk till y{
+  driveTo (false);
 }
 //Loopen är slut
 }
@@ -202,4 +209,34 @@ else
               }
               commandWriteNumber=0;
               commandReadNumber=-1;
+   }
+
+
+
+   void driveTo (bool test) {
+       analogWrite(rightEngine,60);
+       analogWrite(leftEngine,60);
+       delay (2000);
+       if (test==true) {
+          servo.write (right);
+          analogWrite(rightEngine,40);
+          analogWrite(leftEngine,40);
+          delay (1500);
+          STOP ();
+          if (commandReadNumber==-1){
+             memory[0][commandWriteNumber]=-2;  
+             commandWriteNumber++;
+       }}
+       if (test==false){
+           servo.write (left);
+           analogWrite(rightEngine,40);
+           analogWrite(leftEngine,40);
+           delay (1500);
+           STOP ();
+           if (commandReadNumber==-1){
+              memory[0][commandWriteNumber]=-1;  
+              commandWriteNumber++;
+           }
+      }
+      Serial.read ();
    }
