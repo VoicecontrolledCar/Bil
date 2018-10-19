@@ -1,4 +1,4 @@
-#include <Servo.h>  //Test om clonen funkar
+#include <Servo.h> 
 Servo servo;
 
 //Nummret på den analoga pin för de olika komponenterna
