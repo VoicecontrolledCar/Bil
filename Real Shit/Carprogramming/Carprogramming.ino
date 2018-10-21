@@ -197,7 +197,6 @@ else
         memory [0][commandWriteNumber]=executor;
         commandWriteNumber++;
       }
-   
    }
 
 
@@ -236,7 +235,9 @@ else
            if (commandReadNumber==-1){
               memory[0][commandWriteNumber]=-1;  
               commandWriteNumber++;
-           }
-      }
+           }}
       Serial.read ();
    }
+
+
+   
