@@ -10,6 +10,10 @@ void setup() {
 }
 
 void loop() {
-  if (digitalRead (4) == HIGH) analogWrite (9, 100);
-  if (digitalRead (4) == LOW) analogWrite (9, 0);
+  if (digitalRead (4) == HIGH) {
+  analogWrite (3, 100);
+  }
+  if (digitalRead (4) == LOW) {
+    analogWrite (3, 0);
+  }
 }
