@@ -2,11 +2,11 @@
 Servo servo;
 
 //Nummret på den analoga pin för de olika komponenterna
-const int rightEngine=10; 
-const int leftEngine=9; 
+const int rightEngine=5; 
+const int leftEngine=3; 
 const int rightReverse=6; 
-const int leftReverse=5; 
-const int microServo=3; 
+const int leftReverse=11; 
+const int microServo=9; 
 
 //Vinkeln för servon för de olika riktningarna
 const int left=60; 
@@ -23,7 +23,7 @@ int durationRead=0;         //Läser ur minnet hur länge ett kommando använts 
 
 //De olika funktioner och deras datatyper deklararas här
 int velocity(int executor, int power);
-int turning(int angle, int leftEngineSpead, int rightEngineSpead, int executor);
+int turning(int angle, int leftEngineSpeed, int rightEngineSpeed, int executor);
 void Here();
 void STOP ();
 void turnAround ();
@@ -40,7 +40,7 @@ void setup() {             //Visar för arduinon hur pinsen ska användas och st
   pinMode (leftEngine, OUTPUT);
   pinMode (rightReverse, OUTPUT);
   pinMode (leftReverse, OUTPUT);
-  Serial.begin(9600);
+  Serial.begin (9600);
 }
 
 
@@ -52,6 +52,7 @@ void loop() {             //Koden som går runt runt på repeat medan arduinon �
 if(commandReadNumber==-1){
 if (Serial.available()>0){
   executor = Serial.read();
+  executor = executor-48;
 }}
 
 if(executor==0){        //"Stanna"
@@ -87,7 +88,7 @@ if (executor==9) {     //"Nollställ minnet"
 if (executor==-1) {    //"Kör till x"
   driveTo (true);
 }
-if (executor==-2){ //"åk till y{
+if (executor==-2){     //"åk till y"
   driveTo (false);
 }
 //Loopen är slut
@@ -122,11 +123,11 @@ else
 
 
 
-  int turning(int angle, int leftEngineSpead, int rightEngineSpead, int executor)
+  int turning(int angle, int leftEngineSpeed, int rightEngineSpeed, int executor)
   {
   durationWrite=0;
-  analogWrite(leftEngine, leftEngineSpead);
-  analogWrite(rightEngine, rightEngineSpead);
+  analogWrite(leftEngine, leftEngineSpeed);
+  analogWrite(rightEngine, rightEngineSpeed);
   servo.write(angle);
      if(commandReadNumber==-1)
         {
@@ -181,16 +182,16 @@ else
    {
       STOP();
       servo.write(left);
-      analogWrite(rightEngine,30);
+      analogWrite(rightEngine,70);
       delay (1600);
       analogWrite(rightEngine,0);
       servo.write(right);
-      analogWrite(leftReverse,30);
+      analogWrite(leftReverse,70);
       delay (1600);
       analogWrite(leftReverse,0);
       servo.write(straight); 
-      analogWrite(rightEngine,30);
-      analogWrite(leftEngine, 30);
+      analogWrite(rightEngine,70);
+      analogWrite(leftEngine, 70);
       delay (600);
       STOP();
       if (commandReadNumber==-1) {
@@ -213,13 +214,13 @@ else
 
 
    void driveTo (bool test) {
-       analogWrite(rightEngine,60);
-       analogWrite(leftEngine,60);
+       analogWrite(rightEngine,120);
+       analogWrite(leftEngine,120);
        delay (2000);
        if (test==true) {
           servo.write (right);
-          analogWrite(rightEngine,40);
-          analogWrite(leftEngine,40);
+          analogWrite(rightEngine,80);
+          analogWrite(leftEngine,80);
           delay (1500);
           STOP ();
           if (commandReadNumber==-1){
@@ -228,8 +229,8 @@ else
        }}
        if (test==false){
            servo.write (left);
-           analogWrite(rightEngine,40);
-           analogWrite(leftEngine,40);
+           analogWrite(rightEngine,80);
+           analogWrite(leftEngine,80);
            delay (1500);
            STOP ();
            if (commandReadNumber==-1){
