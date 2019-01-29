@@ -1,5 +1,5 @@
 //Att-göra-lista
-// 1: turn around funkar inte alls, och efter den börjat så slutar den att lyssna!!!! 
+// 1: turn around funkar inte alls, och efter den börjat så slutar den att lyssna!!!
 //2: Kunna svänga medans vi backar.
 
 
@@ -20,8 +20,8 @@ const int straight=90;
 const int turningMotorP = 230; 
 const int notTurningMotorP = 0;   
 const int ST = 500;               //Tiden för bilen att stanna i millisekunder
-const int t1 = 1500;              //Sväng-tiden i turnAroundfunktionen
-const int t2 = 2000;              //Back-tiden i turnAroundfunktionen
+const int t1 = 2000;              //Sväng-tiden i turnAroundfunktionen
+const int t2 = 4000;              //Back-tiden i turnAroundfunktionen
 
 //Globala variablar deklareras
 int executor=0;             //Variabeln vars värde styr bilen i loopen     
@@ -29,7 +29,7 @@ int durationWrite;          //Skriver in hur länge ett kommando använts i minn
 int memory[2][200];         //En array som sparar bilens rörelser
 int commandWriteNumber=0;   //Kommer ihåg vilken kolumn som används för att skriva in i minnet
 int commandReadNumber=-1;   //Kommer ihåg vilken kolumn som används för att läsa ur minnet
-int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, används för here, tiden ett kommando används
+int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, tiden ett kommando används
 
 //De olika funktioner och deras datatyper deklararas här
 int velocity(int executor, int power);
@@ -192,30 +192,30 @@ else
 
    void turnAround ()
    {
-      STOP();
-      delay(ST);
-      servo.write(left);
-      delay(200);
-      analogWrite(rightEngine,turningMotorP);
-      analogWrite(leftEngine, notTurningMotorP);
+      STOP ();
+      delay (ST);
+      servo.write (left);
+      delay (200);
+      analogWrite (rightEngine,turningMotorP);        //En 90 graders vänstersväng.
+      analogWrite (leftEngine, notTurningMotorP);
       delay (t1);
-      STOP();
+      STOP ();
       delay (ST);
-      digitalWrite(rightReverse,HIGH);
-      analogWrite(leftReverse, HIGH);
+      digitalWrite (rightReverse, HIGH);              //Backar bakåt
+      digitalWrite (leftReverse, HIGH);
       delay (t2);
-      STOP();
+      STOP ();
       delay (ST);
-      servo.write(left);
-      delay(200);
-      analogWrite(rightEngine,turningMotorP);
-      analogWrite(leftEngine, notTurningMotorP);
-      delay(t1);
-      STOP();
-      delay(ST);
+      servo.write (left);
+      delay (200);
+      analogWrite (rightEngine, turningMotorP);       //En till 90 graders vänstersväng.
+      analogWrite (leftEngine, notTurningMotorP);
+      delay (t1);
+      STOP ();
+      delay (ST);
       
-      if (commandReadNumber==-1) {
-        memory [0][commandWriteNumber]=executor;
+      if (commandReadNumber == -1) {
+        memory [0][commandWriteNumber] = executor;
         commandWriteNumber++;
       }
    
@@ -223,23 +223,23 @@ else
 
 
 
-  void reverse(int Executor){
+  void reverse (int Executor){
     STOP();
-    delay(100);
+    delay(ST);
     durationWrite=0;
-    digitalWrite(rightReverse, HIGH);
-    digitalWrite(leftReverse, HIGH);
+    digitalWrite (rightReverse, HIGH);
+    digitalWrite (leftReverse, HIGH);
     
     if(commandReadNumber==-1){
      while(Serial.available()<=0){
-      delay(1);
+      delay (1);
       durationWrite++;
       }
-     memory[0][commandWriteNumber]=Executor;
-     memory[1][commandWriteNumber]=durationWrite; 
+     memory[0][commandWriteNumber] = Executor;
+     memory[1][commandWriteNumber] = durationWrite; 
       }
       else{
-        delay(durationRead);
+        delay (durationRead);
         Here();
         
         
