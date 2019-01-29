@@ -245,7 +245,8 @@ void velocity (int Executor, int power)
       durationWrite++;
       }
      memory [0][commandWriteNumber] = Executor;
-     memory [1][commandWriteNumber] = durationWrite; 
+     memory [1][commandWriteNumber] = durationWrite;
+     commandWriteNumber++; 
       }else {
         delay (durationRead);
         Here ();
