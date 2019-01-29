@@ -32,8 +32,8 @@ int commandReadNumber=-1;   //Kommer ihåg vilken kolumn som används för att l
 int durationRead=0;         //Läser ur minnet hur länge ett kommando använts i minnet, tiden ett kommando används
 
 //De olika funktioner och deras datatyper deklararas här
-int velocity(int executor, int power);
-int turning(int angle, int leftEngineSpeed, int rightEngineSpeed, int Executor);
+void velocity(int executor, int power);
+void turning(int angle, int leftEngineSpeed, int rightEngineSpeed, int Executor);
 void Here ();
 void STOP ();
 void turnAround ();
@@ -100,7 +100,7 @@ if (executor==9) {     //"Nollställ minnet"
 
 
 
-int velocity (int executor, int power)
+void velocity (int executor, int power)
 {
   STOP();
   delay(100);
@@ -128,7 +128,7 @@ else
 
 
 
-  int turning (int angle, int leftEngineSpeed, int rightEngineSpeed, int Executor)
+  void turning (int angle, int leftEngineSpeed, int rightEngineSpeed, int Executor)
   {
   durationWrite=0;
   analogWrite (leftEngine, leftEngineSpeed);
