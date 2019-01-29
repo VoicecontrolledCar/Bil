@@ -1,17 +1,28 @@
-#include <Servo.h> 
+//Att-göra-lista
+// 1: turn around funkar inte alls, och efter den börjat så slutar den att lyssna!!!! 
+//2: Kunna svänga medans vi backar.
+
+
+
+#include <Servo.h>  
 Servo servo;
-
+//Kom ihåg att lösa i koden att rightReverse är digital, vi får göra en egen pulsmodulering.
 //Nummret på den analoga pin för de olika komponenterna
-const int rightEngine=5; 
+const int rightReverse=12; 
 const int leftEngine=3; 
-const int rightReverse=6; 
-const int leftReverse=11; 
-const int microServo=9; 
+const int rightEngine=6; // Digital Pin, PIn 9 och 10 funkar ej med servobiblotek
+const int leftReverse=13; 
+const int microServo=11; 
 
-//Vinkeln för servon för de olika riktningarna
-const int left=60; 
-const int right=120; 
+//Vinkeln för servon för de olika riktningarna och motorhastigheter
+const int left=45; 
+const int right=135; 
 const int straight=90; 
+const int turningMotorP = 230; //Testas
+const int notTurningMotorP = 0; //Testa
+const int ST = 500; //Testas - (stopp-tid (millisekunder))
+const int t1 = 1500;  
+const int t2 = 2000;
 
 //Variablar deklareras
 int executor=0;             //Variabeln vars värde styr bilen i loopen     
@@ -23,13 +34,12 @@ int durationRead=0;         //Läser ur minnet hur länge ett kommando använts 
 
 //De olika funktioner och deras datatyper deklararas här
 int velocity(int executor, int power);
-int turning(int angle, int leftEngineSpeed, int rightEngineSpeed, int executor);
+int turning(int angle, int leftEngineSpead, int rightEngineSpead, int executor);
 void Here();
 void STOP ();
-void turnAround ();
+ void turnAround ();
 void clearMemory ();
-void driveTo (bool test);
-
+void reverse(int Executor);
 
 
 
@@ -40,7 +50,8 @@ void setup() {             //Visar för arduinon hur pinsen ska användas och st
   pinMode (leftEngine, OUTPUT);
   pinMode (rightReverse, OUTPUT);
   pinMode (leftReverse, OUTPUT);
-  Serial.begin (9600);
+  Serial.begin(9600);
+  STOP();
 }
 
 
@@ -58,38 +69,32 @@ if (Serial.available()>0){
 if(executor==0){        //"Stanna"
   STOP();
 }
-if(executor==1){        //"Växel 1"
-  velocity(1,30);
+if(executor==1){        //"Backa"
+  reverse(1);
   }
 if(executor==2){        //"Växel 2"
-  velocity(2,60);
+  velocity(2,150);
   }
 if(executor==3){        //"Växel 3"
-  velocity(3,120);
+  velocity(3,200);
   }
 if(executor==4){        //"Växel 4"
   velocity(4,255);
   }
 if(executor==5){        //"Sväng vänster"
-  turning(left,30,0,6);
+  turning(left,0,230,6);
   }
 if(executor==6){        //"Sväng höger"
-  turning(right,0,30,5);
+  turning(right,230,0,5);
   }
-if(executor==7){       //"Hit"
+if(executor==7){       //"Here"
   Here();
-}  
+}
 if (executor==8){      //"Vänd"
   turnAround();
 }
 if (executor==9) {     //"Nollställ minnet"
   clearMemory ();
-}
-if (executor==-1) {    //"Kör till x"
-  driveTo (true);
-}
-if (executor==-2){     //"åk till y"
-  driveTo (false);
 }
 //Loopen är slut
 }
@@ -99,6 +104,8 @@ if (executor==-2){     //"åk till y"
 
 int velocity(int executor, int power)
 {
+  STOP();
+  delay(100);
   durationWrite=0;
   servo.write(straight);
   analogWrite(rightEngine, power);
@@ -123,11 +130,11 @@ else
 
 
 
-  int turning(int angle, int leftEngineSpeed, int rightEngineSpeed, int executor)
+  int turning(int angle, int leftEngineSpead, int rightEngineSpead, int executor)
   {
   durationWrite=0;
-  analogWrite(leftEngine, leftEngineSpeed);
-  analogWrite(rightEngine, rightEngineSpeed);
+  analogWrite(leftEngine, leftEngineSpead);
+  analogWrite(rightEngine, rightEngineSpead);
   servo.write(angle);
      if(commandReadNumber==-1)
         {
@@ -148,10 +155,10 @@ else
 
 
 
-    void STOP ()
+    void STOP ()  //Ska vi göra STOP lite smartare genom att matcha stop med att skicka ström till motsatt hål som den åker mot; (iaf framåt)?
     {
       analogWrite(rightEngine,0);
-      analogWrite(rightReverse,0);
+      digitalWrite(rightReverse,LOW);
       analogWrite(leftEngine,0);
       analogWrite(leftReverse,0);
       servo.write(straight); 
@@ -171,7 +178,8 @@ else
     if(executor==0){                   //När det inte längre finns data att läsa in så stannar bilen
       STOP ();
       clearMemory ();
-      Serial.read();  
+      
+      if(Serial.available()>0) Serial.read();  
       }
     }
 
@@ -181,26 +189,61 @@ else
    void turnAround ()
    {
       STOP();
+      delay(ST);
       servo.write(left);
-      analogWrite(rightEngine,70);
-      delay (1600);
-      analogWrite(rightEngine,0);
-      servo.write(right);
-      analogWrite(leftReverse,70);
-      delay (1600);
-      analogWrite(leftReverse,0);
-      servo.write(straight); 
-      analogWrite(rightEngine,70);
-      analogWrite(leftEngine, 70);
-      delay (600);
+      delay(200);
+      analogWrite(rightEngine,turningMotorP);
+      analogWrite(leftEngine, notTurningMotorP);
+      delay (t1);
       STOP();
+      delay (ST);
+      digitalWrite(rightReverse,HIGH);
+      analogWrite(leftReverse, HIGH);
+      delay (t2);
+      STOP();
+      delay (ST);
+      servo.write(left);
+      delay(200);
+      analogWrite(rightEngine,turningMotorP);
+      analogWrite(leftEngine, notTurningMotorP);
+      delay(t1);
+      STOP();
+      delay(ST);
+      
       if (commandReadNumber==-1) {
         memory [0][commandWriteNumber]=executor;
         commandWriteNumber++;
       }
+   
    }
 
 
+
+  void reverse(int Executor){
+    STOP();
+    delay(100);
+    durationWrite=0;
+    digitalWrite(rightReverse, HIGH);
+    digitalWrite(leftReverse, HIGH);
+    
+    if(commandReadNumber==-1){
+     while(Serial.available()<=0){
+      delay(1);
+      durationWrite++;
+      }
+     memory[0][commandWriteNumber]=Executor;
+     memory[1][commandWriteNumber]=durationWrite; 
+      }
+      else{
+        delay(durationRead);
+        Here();
+        
+        
+        }
+    STOP();
+    }
+  
+ 
 
    void clearMemory () {
     for(int w=0;w++;w<200){   
@@ -210,35 +253,3 @@ else
               commandWriteNumber=0;
               commandReadNumber=-1;
    }
-
-
-
-   void driveTo (bool test) {
-       analogWrite(rightEngine,120);
-       analogWrite(leftEngine,120);
-       delay (2000);
-       if (test==true) {
-          servo.write (right);
-          analogWrite(rightEngine,80);
-          analogWrite(leftEngine,80);
-          delay (1500);
-          STOP ();
-          if (commandReadNumber==-1){
-             memory[0][commandWriteNumber]=-2;  
-             commandWriteNumber++;
-       }}
-       if (test==false){
-           servo.write (left);
-           analogWrite(rightEngine,80);
-           analogWrite(leftEngine,80);
-           delay (1500);
-           STOP ();
-           if (commandReadNumber==-1){
-              memory[0][commandWriteNumber]=-1;  
-              commandWriteNumber++;
-           }}
-      Serial.read ();
-   }
-
-
-   
