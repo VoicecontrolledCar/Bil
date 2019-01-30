@@ -108,7 +108,7 @@ if (executor == 9) {     //"Nollställ minnet"
 if (executor == -1) {     //Backa och sväng höger (ej i färdriktningen)
   turning (right, 0, 0, HIGH, LOW, -2);
 }
-if (executor == -2) {     //Backa och sväng vänster (i färdriktningen)
+if (executor == -2) {     //Backa och sväng vänster (ej i färdriktningen)
   turning (left, 0, 0, LOW, HIGH, -1);
 }
 }//Loopen är slut
