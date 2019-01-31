@@ -1,5 +1,5 @@
 //Att-göra-lista
-// 1: turn around funkar inte alls, och efter den börjat så slutar den att lyssna!!!
+// 1: turn around funkar inte alls, och efter den börjat så slutar den att lyssna!!!CHECK
 //2: Kunna svänga medans vi backar.CHECK 
 
 
@@ -232,6 +232,9 @@ void velocity (int Executor, int power)
         memory [0][commandWriteNumber] = executor;
         commandWriteNumber++;
       }
+     else{
+     Here();  //Så att den hoppar tillbaka till Here efter att ha vänt ifall den var på Here från början(inte verifierad), kan vara därför den fucka upp och fastna i loop
+     }
    }
 
 
