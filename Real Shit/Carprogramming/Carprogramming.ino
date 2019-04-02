@@ -173,7 +173,7 @@ void velocity (int Executor, int power)
       analogWrite (rightEngine, 0);
       digitalWrite (rightReverse, LOW);
       analogWrite (leftEngine, 0);
-      analogWrite (leftReverse, LOW);
+      analogWrite (leftReverse, 0); //stod på LOW förrut
       servo.write (straight); 
     }
 
